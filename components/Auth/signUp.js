@@ -102,7 +102,7 @@ const User_SignUp_Screen = (props) => {
   const UploadImage = async (uri, uid) => {
     const response = await fetch(uri);
     const blob = await response.blob();
-    var ref = firebase
+    var ref = await firebase
       .storage()
       .ref()
       .child(`Profile/images/${uid}/${username}.jpg`);

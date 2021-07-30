@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,8 +12,11 @@ import {
 import firebase from "../../Firebase/FirebaseConfig";
 import RadioButtonRN from "radio-buttons-react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import User_Login_Screen from "../Auth/Login";
 
 const Add_Post_Screen = (props) => {
+  const [logOut, setLogOut] = useState(false);
+
   const [name, setName] = useState("");
   const [mobileNumber, setMobileNumber] = useState(null);
   const [bloodGroup, setBloodGroup] = useState(null);
@@ -25,7 +28,17 @@ const Add_Post_Screen = (props) => {
   const [postUserName, setPostUserName] = useState("");
   const [postUserId, setPostUserId] = useState("");
 
-  const [logOut, setLogOut] = useState(false);
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        console.log("User is login");
+      } else {
+        //  <User_Login_Screen/>
+        setLogOut(true);
+        props.navigation.navigate("Login");
+      }
+    });
+  }, []);
 
   const Blood_group = [
     {
@@ -77,26 +90,31 @@ const Add_Post_Screen = (props) => {
           .ref(`Profile/images/${user.uid}/${user.displayName}.jpg`)
           .getDownloadURL()
           .then((url) => setImage(url));
-        setPostUserName(user.displayName), setPostUserId(user.uid);
-        console.log("ajjjjjjjjjjjjjjjjj;l", image, postUserName, postUserId);
+        setPostUserName(user.displayName);
+        setPostUserId(user.uid);
+        console.log("ajjjjjjjjjjjjjjjjjl", image, postUserName, postUserId);
       } else {
-        alert(err);
+        props.navigation.navigate("Login");
       }
     });
   };
 
   const Add_Post_Handler = async () => {
-    const a = firebase.database().ref().child("AddPost");
+    const a = await firebase.database().ref().child("AddPost");
     await UID();
-      await firebase.auth().onAuthStateChanged((user) => {
+    await firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-      firebase
-      .storage()
-      .ref(`Profile/images/${user.uid}/${user.displayName}.jpg`)
-      .getDownloadURL()
-      .then((url) => setImage(url));
+        firebase
+          .storage()
+          .ref(`Profile/images/${user.uid}/${user.displayName}.jpg`)
+          .getDownloadURL()
+          .then((url) => setImage(url));
+
+        console.log("url=>", URL);
+      } else {
+        props.navigation.navigate("Login");
       }
-    })
+    });
 
     const r = a.push({
       name: name,
@@ -109,7 +127,6 @@ const Add_Post_Screen = (props) => {
       postUserName: postUserName,
       postUserId: postUserId,
     });
-
   };
 
   // const a = () => {
@@ -121,82 +138,93 @@ const Add_Post_Screen = (props) => {
   //     });
   //   });
   // };
-
+const login = () =>{
+    props.navigation.navigate("Login");
+  }
   return (
     <ScrollView>
-      <Text style={styles.title}>Name</Text>
-      <View style={styles.input}>
-        <TextInput
-          style={styles.user_input}
-          placeholder="name"
-          value={name}
-          onChangeText={(text) => setName(text)}
-        />
+      {logOut ? (
+        <View>
+        <Text>Your are logout</Text>
+        <Button title="login" onPress={()=> login()}/>
       </View>
-      <Text style={styles.title}>Gender</Text>
-      <View style={styles.input}>
-        <RadioButtonRN
-          data={Gender}
-          selectedBtn={(e) => setGender(e)}
-          style={styles.radioButtons}
-          icon={<Icon name="check-circle" size={25} color="#2c9dd1" />}
-        />
-      </View>
-      <Text style={styles.title}>Contact</Text>
-      <View style={styles.input}>
-        <TextInput
-          style={styles.user_input}
-          placeholder="contact"
-          value={mobileNumber}
-          keyboardType="numeric"
-          onChangeText={(text) => setMobileNumber(text)}
-        />
-      </View>
-      <Text style={styles.title}>Blood goup</Text>
-      <View style={styles.input}>
-        <RadioButtonRN
-          data={Blood_group}
-          selectedBtn={(e) => setBloodGroup(e)}
-          style={styles.radioButtons}
-          // icon={<Icon name="check-circle" size={25} color="#2c9dd1" />}
-        />
-      </View>
-      <Text style={styles.title}>Address</Text>
-      <View style={styles.input}>
-        <TextInput
-          style={styles.user_input}
-          placeholder="address"
-          value={address}
-          onChangeText={(text) => setAddress(text)}
-        />
-      </View>
-      <Text style={styles.title}>Why you need ?</Text>
-      <View style={styles.input}>
-        <TextInput
-          style={styles.user_input}
-          placeholder="reason"
-          value={reason}
-          onChangeText={(text) => setReason(text)}
-        />
-      </View>
-      <View style={styles.input}>
-        <TextInput
-          style={styles.user_input}
-          placeholder="any quary"
-          value={quary}
-          onChangeText={(text) => setQuery(text)}
-        />
-      </View>
+      ) : (
+        <View>
+          <Text style={styles.title}>Name</Text>
+          <View style={styles.input}>
+            <TextInput
+              style={styles.user_input}
+              placeholder="name"
+              value={name}
+              onChangeText={(text) => setName(text)}
+            />
+          </View>
+          <Text style={styles.title}>Gender</Text>
+          <View style={styles.input}>
+            <RadioButtonRN
+              data={Gender}
+              selectedBtn={(e) => setGender(e)}
+              style={styles.radioButtons}
+              icon={<Icon name="check-circle" size={25} color="#2c9dd1" />}
+            />
+          </View>
+          <Text style={styles.title}>Contact</Text>
+          <View style={styles.input}>
+            <TextInput
+              style={styles.user_input}
+              placeholder="contact"
+              value={mobileNumber}
+              keyboardType="numeric"
+              onChangeText={(text) => setMobileNumber(text)}
+            />
+          </View>
+          <Text style={styles.title}>Blood goup</Text>
+          <View style={styles.input}>
+            <RadioButtonRN
+              data={Blood_group}
+              selectedBtn={(e) => setBloodGroup(e)}
+              style={styles.radioButtons}
+              // icon={<Icon name="check-circle" size={25} color="#2c9dd1" />}
+            />
+          </View>
+          <Text style={styles.title}>Address</Text>
+          <View style={styles.input}>
+            <TextInput
+              style={styles.user_input}
+              placeholder="address"
+              value={address}
+              onChangeText={(text) => setAddress(text)}
+            />
+          </View>
+          <Text style={styles.title}>Why you need ?</Text>
+          <View style={styles.input}>
+            <TextInput
+              style={styles.user_input}
+              placeholder="reason"
+              value={reason}
+              onChangeText={(text) => setReason(text)}
+            />
+          </View>
+          <View style={styles.input}>
+            <TextInput
+              style={styles.user_input}
+              placeholder="any quary"
+              value={quary}
+              onChangeText={(text) => setQuery(text)}
+            />
+          </View>
 
-      <View>
-        <Button
-          title="submit"
-          onPress={() => {
-            // UID();
-            Add_Post_Handler();
-          }}
-        />
-      </View>
+          <View>
+            <Button
+              title="submit"
+              onPress={() => {
+                // UID();
+                Add_Post_Handler();
+              }}
+            />
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 };

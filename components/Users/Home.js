@@ -19,7 +19,7 @@ import PostItem from "../ConstantsItems/PostItem";
 const Home_Screen = (props) => {
   const [image, setImage] = useState(null);
   const [logOut, setLogOut] = useState(false);
-  const [a, setA] = useState(0);
+  const [a, setA] = useState("");
   const [currentUserName, setcurrentUserName] = useState("");
   const [userList1, setUserList1] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +40,7 @@ const Home_Screen = (props) => {
         setLogOut(false);
         setImage("");
         setcurrentUserName("");
+        props.navigation.navigate("Login");
       }
     });
   }, []);
@@ -73,68 +74,59 @@ const Home_Screen = (props) => {
       setIsLoading(false);
       setUserList1(userList);
     });
-  }, []);
+  },[]);
 
   return (
     <ScrollView>
-      {isLoading ? (
+      {/* {isLoading ? (
         <ActivityIndicator
           style={{ flex: 1, alignSelf: "center", marginTop: "50%" }}
           size={35}
           color="orange"
         />
       ) : (
-        <View>
-          <View style={styles.post}>
-            <Text>You: {currentUserName}</Text>
-            <Image source={{ uri: image }} style={styles.image} />
-          </View>
-          <FlatList
-            data={userList1}
-            keyExtractor={(item) => item.id}
-            renderItem={(items) => {
-              return (
-                <View>
-                  <View style={styles.post}>
-                    <View style={styles.image_name}>
-                      <Image
-                        source={{ uri: items.item.imageUrl }}
-                        style={styles.image}
-                      />
-                      <Text>{items.item.postUserName} </Text>
-                    </View>
-                    <Text>Name: {items.item.name} </Text>
-                    <Text>Address: {items.item.address} </Text>
-                    <Text>Contact: {items.item.number} </Text>
-                    <Text>Gender: {items.item.gender} </Text>
-                    <Text>BloodGroup: {items.item.bloodGroup} </Text>
-                    <Text>Reason"{items.item.reason} </Text>
-                  </View>
-                </View>
-              );
-            }}
-          />
-          <Text>ID ===== {a}</Text>
+      )} */}
 
-          {/* <Button
+      <View>
+        <Text>ID = {a}</Text>
+        <View style={styles.post}>
+          <Text>You: {currentUserName}</Text>
+          <Image source={{ uri: image }} style={styles.image} />
+        </View>
+        <FlatList
+          data={userList1}
+          keyExtractor={(item) => item.id}
+          renderItem={(items) => {
+            return (
+              <View>
+                <View style={styles.post}>
+                  <View style={styles.image_name}>
+                    <Image
+                      source={{ uri: items.item.imageUrl }}
+                      style={styles.image}
+                    />
+                    <Text>{items.item.postUserName} </Text>
+                  </View>
+                  <Text>Name: {items.item.name} </Text>
+                  <Text>Address: {items.item.address} </Text>
+                  <Text>Contact: {items.item.number} </Text>
+                  <Text>Gender: {items.item.gender} </Text>
+                  <Text>BloodGroup: {items.item.bloodGroup} </Text>
+                  <Text>Reason"{items.item.reason} </Text>
+                </View>
+              </View>
+            );
+          }}
+        />
+
+        {/* <Button
           title="Get Uid"
           onPress={() => {
             // UID();
             // x();
           }}
         /> */}
-          {logOut ? (
-            <Button
-              title="Logout"
-              onPress={() => {
-                logout();
-              }}
-            />
-          ) : (
-            <Text>You are logout</Text>
-          )}
-        </View>
-      )}
+      </View>
     </ScrollView>
   );
 };
@@ -166,6 +158,7 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowRadius: 10,
   },
+
 });
 
 export default Home_Screen;

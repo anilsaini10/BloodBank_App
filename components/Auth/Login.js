@@ -16,6 +16,16 @@ const User_Login_Screen = (props) => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      setIsLoading(true);
+      if (user) {
+        props.navigation.navigate("Home");
+        setIsLoading(false);
+      }
+      setIsLoading(false);
+    });
+  }, []);
   const login = () => {
     if (email === "" || password === "") {
       Alert.alert("Error Occured", "enter valid email or password", [
@@ -36,16 +46,6 @@ const User_Login_Screen = (props) => {
       });
   };
 
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      setIsLoading(true);
-      if (user) {
-        props.navigation.navigate("Home");
-        setIsLoading(false);
-      }
-      setIsLoading(false);
-    });
-  }, []);
 
   return (
     <View style={styles.container}>

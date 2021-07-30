@@ -23,7 +23,7 @@ const Bottom_Tab = createBottomTabNavigator();
 
 
 
-const User_Auth = (props) => {
+export const User_Auth = (props) => {
     return(
     <Stack.Navigator>
         {/* <Stack.Screen name = "isuserlogin" component ={IS_User_Login_Screen}/> */}
@@ -80,16 +80,14 @@ const Home = (props) => {
 
 const Main_Bottom_Navigator = ({navigation}) => {
     return(
-    <NavigationContainer>
+    // <NavigationContainer>
+    // </NavigationContainer>
         <Bottom_Tab.Navigator>
             <Bottom_Tab.Screen  name="List" component={Main_Drawer_Navigator}/>
-            {/* <Bottom_Tab.Screen  name="SignUp" component={User_SignUP}/> */}
-            {/* <Bottom_Tab.Screen name="Home" component={Home}/> */}
             <Bottom_Tab.Screen  name="AddPost" component={Add_Post}/>
             <Bottom_Tab.Screen name="profile" component={User_Profile}/>
 
         </Bottom_Tab.Navigator>
-    </NavigationContainer>
     )
 };
 
